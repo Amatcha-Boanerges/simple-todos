@@ -9,24 +9,25 @@ import { Accounts } from 'meteor/accounts-base';
 if (Meteor.isServer) {
   describe('Tasks', () => {
     describe('methods', () => {
-      const username = 'yannick';
-      let taskId, userId;
+      const userId = Random.id();
+      // const username = 'yannick';
+      let taskId;
       
-      // run once
-      before (() => {
-        // check if there is a user
-        let user = Meteor.users.findOne({username : username});
-        // Test if there is not a user, create one
-        if (!user) {
-          userId = Accounts.createUser ({
-            'username' : username,
-            'email' : 'a@blur.com',
-            'password' : '1234',
-          });
-        } else {
-          userId = user._id
-        }
-      });
+      // // run once
+      // before (() => {
+      //   // check if there is a user
+      //   let user = Meteor.users.findOne({username : username});
+      //   // Test if there is not a user, create one
+      //   if (!user) {
+      //     userId = Accounts.createUser ({
+      //       'username' : username,
+      //       'email' : 'a@blur.com',
+      //       'password' : '1234',
+      //     });
+      //   } else {
+      //     userId = user._id
+      //   }
+      // });
       beforeEach(() => {
         Tasks.remove({});
         taskId = Tasks.insert({
@@ -48,6 +49,32 @@ if (Meteor.isServer) {
         // Verify that the method does what we expected
         assert.equal(Tasks.find().count(), 0);
       });
+
+      it("cannot delete someone else's task", () => {
+        // Find the internal implementation of the task method so we can
+        Tasks.update(taskId, {$set: {private: true}});
+        // Genernate random ID to rep. another user
+        const anotherUserId = Random.id();
+
+        // test it in isolation
+        const deleteTask = Meteor.server.method_handlers['tasks.remove'];
+        
+        // Create fake userId
+        const fakeUserObject = { 'userId' : anotherUserId };
+        
+        // verify that exeption is thrown
+        assert.throws( function(){
+          // Run the method with `this` set to the fake invocation
+          deleteTask.apply(fakeUserObject, [taskId]);
+        }, Meteor.Error,'not-authorized');
+
+
+        // Verify that the method does what we expected
+
+        assert.equal(Tasks.find().count(), 1);
+      });
+
+
 
       it('can insert task', () => {
         const text = 'test';

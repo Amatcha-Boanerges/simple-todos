@@ -9,25 +9,25 @@ import { Accounts } from 'meteor/accounts-base';
 if (Meteor.isServer) {
   describe('Tasks', () => {
     describe('methods', () => {
-      const userId = Random.id();
-      // const username = 'yannick';
-      let taskId;
+      // const userId = Random.id();
+      const username = 'yannick';
+      let taskId, userId;
       
-      // // run once
-      // before (() => {
-      //   // check if there is a user
-      //   let user = Meteor.users.findOne({username : username});
-      //   // Test if there is not a user, create one
-      //   if (!user) {
-      //     userId = Accounts.createUser ({
-      //       'username' : username,
-      //       'email' : 'a@blur.com',
-      //       'password' : '1234',
-      //     });
-      //   } else {
-      //     userId = user._id
-      //   }
-      // });
+      // run once
+      before (() => {
+        // check if there is a user
+        let user = Meteor.users.findOne({username : username});
+        // Test if there is not a user, create one
+        if (!user) {
+          userId = Accounts.createUser ({
+            'username' : username,
+            'email' : 'a@blur.com',
+            'password' : '1234',
+          });
+        } else {
+          userId = user._id
+        }
+      });
       beforeEach(() => {
         Tasks.remove({});
         taskId = Tasks.insert({
@@ -74,15 +74,15 @@ if (Meteor.isServer) {
         assert.equal(Tasks.find().count(), 1);
       });
 
-
-
       it('can insert task', () => {
-        const text = 'test';
+        //Create a string for the task
+        const text = 'test'; 
+        //Get method
         const insertTask = Meteor.server.method_handlers['tasks.insert'];
-        // Set up a fake method invocation that looks like what the method expects
-        const invocation = { userId };
+        // Create fake user object
+        const fakeUserObject = { userId };
         // Run the method with `this` set to the fake invocation
-        insertTask.apply(invocation, [text]);
+        insertTask.apply(fakeUserObject, [text]);
         // Verify that the method does what we expected
         assert.equal(Tasks.find().count(), 2);
       });

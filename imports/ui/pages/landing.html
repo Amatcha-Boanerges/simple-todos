@@ -7,8 +7,7 @@
           <input type="checkbox" />
           Hide Completed Tasks
         </label>
-
-        {{> loginButtons}}
+        <a href="/logout"> Logout, {{currentUser.username}}</a>
 
         {{#if currentUser}}
         <form class="new-task">
@@ -16,7 +15,7 @@
         </form>
         {{/if}}
       </header>
-   
+
       <ul>
         {{#each tasks}}
           {{> task}}

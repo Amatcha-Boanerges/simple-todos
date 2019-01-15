@@ -6,7 +6,6 @@ FlowRouter.route('/',{
         {
             //header:Landing_page,
             main:Landing_page
-        }
-    );
+        });
     }
 });

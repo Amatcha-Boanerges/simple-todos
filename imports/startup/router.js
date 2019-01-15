@@ -3,6 +3,10 @@
 FlowRouter.route('/',{
     action:function(){
         BlazeLayout.render('App_Body',
-        {main:Landing_page}
-    )};
+        {
+            //header:Landing_page,
+            main:Landing_page
+        }
+    );
+    }
 });

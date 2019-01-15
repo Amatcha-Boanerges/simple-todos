@@ -21,6 +21,7 @@ FlowRouter.route('/',{
 });
 
 FlowRouter.route('/tasks',{
+    triggersEnter: [isUserLoggedIn],
     action:function(){
         BlazeLayout.render('App_Body',
         {
@@ -37,3 +38,11 @@ FlowRouter.route('/logout',{
         });
     }
 });
+
+function isUserLoggedIn(context){
+        if(Meteor.userId()){
+            FlowRouter.current();
+        } else {
+            FlowRouter.go('/')
+        }
+    }

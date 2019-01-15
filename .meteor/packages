@@ -21,3 +21,5 @@ reactive-dict
 accounts-ui
 accounts-password
 meteortesting:mocha
+kadira:flow-router
+kadira:blaze-layout
